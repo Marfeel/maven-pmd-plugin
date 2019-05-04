@@ -19,8 +19,24 @@ package org.apache.maven.plugins.pmd;
  * under the License.
  */
 
+import net.sourceforge.pmd.PMD;
+import org.apache.maven.doxia.siterenderer.Renderer;
+import org.apache.maven.model.ReportPlugin;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.reporting.AbstractMavenReport;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.PathTool;
+import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,20 +49,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
-import net.sourceforge.pmd.PMD;
-
-import org.apache.maven.doxia.siterenderer.Renderer;
-import org.apache.maven.model.ReportPlugin;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.reporting.AbstractMavenReport;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.PathTool;
-import org.codehaus.plexus.util.ReaderFactory;
-import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
  * Base class for the PMD reports.
@@ -446,9 +448,32 @@ public abstract class AbstractPmdReport
      */
     private String getIncludes()
     {
+        List<String> toRemove = new ArrayList<>();
+        List<String> toAdd = new ArrayList<>();
+        try
+        {
+            if ( includes != null && !includes.isEmpty() )
+            {
+                for ( String include : includes )
+                {
+                    if ( !include.endsWith( ".java" ) )
+                    {
+                        toAdd.addAll( Files.readAllLines( Paths.get( include ), StandardCharsets.UTF_8 ) );
+                        toRemove.add( include );
+                    }
+                }
+            }
+        }
+        catch ( IOException ioe )
+        {
+            ioe.printStackTrace();
+        }
+
         Collection<String> patterns = new LinkedHashSet<>();
         if ( includes != null )
         {
+            includes.removeAll( toRemove );
+            includes.addAll( toAdd );
             patterns.addAll( includes );
         }
         if ( patterns.isEmpty() )

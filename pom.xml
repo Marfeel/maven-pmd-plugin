@@ -30,7 +30,7 @@ under the License.
   </parent>
 
   <artifactId>maven-pmd-plugin</artifactId>
-  <version>3.12.1-SNAPSHOT</version>
+  <version>3.12.1.MARFEEL-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Apache Maven PMD Plugin</name>
@@ -77,12 +77,13 @@ under the License.
     <system>Jenkins</system>
     <url>https://builds.apache.org/job/maven-box/job/maven-pmd-plugin/</url>
   </ciManagement>
-  <distributionManagement>
+
+  <!-- distributionManagement>
     <site>
       <id>apache.website</id>
       <url>scm:svn:https://svn.apache.org/repos/asf/maven/website/components/${maven.site.path}</url>
     </site>
-  </distributionManagement>
+  </distributionManagement -->
 
   <properties>
     <mavenVersion>3.0</mavenVersion>
@@ -371,4 +372,15 @@ under the License.
       </reporting>
     </profile>
   </profiles>
+
+  <distributionManagement>
+    <repository>
+      <id>marfeel-private</id>
+      <url>http://repositories.marfeel.com:60081/nexus/content/repositories/marfeel_private</url>
+    </repository>
+    <snapshotRepository>
+      <id>marfeel-snapshot-private</id>
+      <url>http://repositories.marfeel.com:60081/nexus/content/repositories/marfeel_snapshot_private</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
