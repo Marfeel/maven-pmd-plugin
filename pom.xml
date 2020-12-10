@@ -376,11 +376,11 @@ under the License.
   <distributionManagement>
     <repository>
       <id>marfeel-private</id>
-      <url>http://repositories.marfeel.com:60081/nexus/content/repositories/marfeel_private</url>
+      <url>${repo-url-private}</url>
     </repository>
     <snapshotRepository>
       <id>marfeel-snapshot-private</id>
-      <url>http://repositories.marfeel.com:60081/nexus/content/repositories/marfeel_snapshot_private</url>
+      <url>${repo-url-snapshot-private}</url>
     </snapshotRepository>
   </distributionManagement>
 </project>
